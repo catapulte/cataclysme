@@ -9,7 +9,7 @@
 
 <script>
   import axios from 'axios';
-  import firebase from 'firebase';
+  import { firebase, urlBackend } from '@/services/config';
   
   import catProfile from '@/components/catProfile';
   
@@ -26,7 +26,7 @@
     mounted() {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          axios.get(`http://127.0.0.1:8080/users/${user.uid}/cats`)
+          axios.get(`${urlBackend}/users/${user.uid}/cats`)
             .then((response) => {
               this.catProfiles = response.data;
             })

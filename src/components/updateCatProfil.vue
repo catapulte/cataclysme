@@ -23,7 +23,7 @@
 
 <script>
   import axios from 'axios';
-  import { firebase } from '@/services/config';
+  import { firebase, urlBackend } from '@/services/config';
   import router from '@/router';
   
   export default {
@@ -38,7 +38,7 @@
       update() {
         const user = firebase.auth().currentUser;
         /* eslint-disable indent */
-        axios.put(`http://127.0.0.1:8080/cats/${this.id}`, {
+        axios.put(`${urlBackend}/cats/${this.id}`, {
             id: this.id,
             name: this.name,
             userId: user.uid,

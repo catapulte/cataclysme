@@ -2,7 +2,7 @@ import axios from 'axios';
 import { rxEventBus } from '@/eventbus';
 import * as events from '@/eventbus/events';
 import router from '@/router';
-import { firebase } from './config';
+import { firebase, urlBackend } from './config';
 
 
 const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -20,8 +20,8 @@ const selectProvider = (provider) => {
   return '';
 };
 
-const getUserByUID = uid => axios.get(`http://127.0.0.1:8080/users/${uid}`);
-const putUserByUID = uid => axios.put(`http://127.0.0.1:8080/users/${uid}`, {
+const getUserByUID = uid => axios.get(`${urlBackend}/users/${uid}`);
+const putUserByUID = uid => axios.put(`${urlBackend}/users/${uid}`, {
   firebaseId: uid,
 });
 
