@@ -5,12 +5,12 @@
         <div class="panel-body">
           <div class="form-group">
             <label for="catId">Identifiant matériel</label>
-            <input :value="id" type="text" class="form-control" id="techId" placeholder="Identifiant matériel">
+            <input v-model="id" type="text" class="form-control" id="techId" placeholder="Identifiant matériel">
           </div>
   
           <div class="form-group">
             <label for="catName">Nom</label>
-            <input type="text" class="form-control" id="catName" placeholder="Nom">
+            <input v-model="name" type="text" class="form-control" id="catName" placeholder="Nom">
           </div>
   
           <button @click='update' class="btn btn-default pull-right">Mettre à jour</button>
@@ -22,32 +22,31 @@
 </template>
 
 <script>
-  import {
-    mapState,
-  } from 'vuex';
-  
-  import * as types from '@/store/mutation-types';
-  
-  import DropZoneFile from './dropZoneFile';
-  
+  import axios from 'axios';
+  import { firebase } from '@/services/config';
+  import router from '@/router';
   
   export default {
-    components: {
-      DropZoneFile,
+    data() {
+      return {
+        id: this.initcat ? this.initcat.id : null,
+        name: this.initcat ? this.initcat.name : null,
+      };
     },
-    computed: {
-      ...mapState({
-        id: state => state.cat.catId,
-        name: state => state.cat.catName,
-      }),
-  
-    },
+    props: ['initcat'],
     methods: {
       update() {
-        this.$store.commit(types.UPDATE_CAT_ID, this.id);
-        this.$store.commit(types.UPDATE_CAT_NAME, this.name);
-        this.$router.push('updateCatImage');
+        const user = firebase.auth().currentUser;
+        /* eslint-disable indent */
+        axios.put(`http://127.0.0.1:8080/cats/${this.id}`, {
+            id: this.id,
+            name: this.name,
+            userId: user.uid,
+          })
+          .then(() => router.push(`updateCatImage/${this.id}`))
+          .catch(error => console.log(error));
       },
+      /* eslint-enable indent */
     },
   };
 </script>

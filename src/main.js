@@ -11,7 +11,9 @@ import Loader from '@/components/loader';
 import LoginBar from '@/components/loginBar';
 
 import router from './router';
-import store from './store';
+import services from './services/auth';
+
+services.init();
 
 
 Vue.config.productionTip = false;
@@ -19,13 +21,12 @@ Vue.config.productionTip = false;
 document.addEventListener('DOMContentLoaded', () => {
   // let doc = $(document);
 
-  Vue.component('login-bar', LoginBar, store);
-  Vue.component('loader', Loader, store);
+  Vue.component('login-bar', LoginBar);
+  Vue.component('loader', Loader);
 
   /* eslint-disable no-new */
   new Vue({
     el: '#app',
     router,
-    store,
   });
 });

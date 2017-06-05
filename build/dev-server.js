@@ -76,12 +76,26 @@ devMiddleware.waitUntilValid(() => {
   console.log('> Listening at ' + uri + '\n')
   // when env is testing, don't need open it
   if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(uri)
+    // opn(uri)
   }
   _resolve()
 })
 
-var server = app.listen(port)
+var http = require('http');
+var fs = require('fs');
+var https = require('https');
+
+var sslOptions = {
+  key: fs.readFileSync('./config/key.pem'),
+  cert: fs.readFileSync('./config/cert.pem'),
+  passphrase: 'lolcat'
+};
+
+http.createServer(app).listen(port);
+https.createServer(sslOptions, app).listen(9043);
+
+
+// var server = app.listen(port)
 
 module.exports = {
   ready: readyPromise,

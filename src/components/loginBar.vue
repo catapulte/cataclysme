@@ -3,11 +3,11 @@
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                                      <span class="sr-only">Toggle navigation</span>
-                                      <span class="icon-bar"></span>
-                                      <span class="icon-bar"></span>
-                                      <span class="icon-bar"></span>
-                                    </button>
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
         <a class="navbar-brand" href="#">LOL Cat on IOT</a>
       </div>
   
@@ -20,7 +20,7 @@
             <router-link to="/signUp">SignUp</router-link>
           </li>
           <li role="presentation" v-if="user">
-            <a v-on:click="signOut">SignOut</a>
+            <a v-on:click="signOut" style="cursor: pointer;">SignOut</a>
           </li>
         </ul>
         <div class="navbar-form navbar-right" v-if="user">
@@ -33,27 +33,40 @@
 
 <script>
   import BootstrapToggle from 'vue-bootstrap-toggle';
-  
   import {
-    mapGetters,
-    mapActions,
-  } from 'vuex';
+    firebase,
+  } from '@/services/config';
+  import {
+    rxEventBus,
+    RxEvent,
+  } from '@/eventbus';
+  import * as events from '@/eventbus/events';
+  
   
   export default {
     data() {
       return {
         checked: true,
+        user: null,
       };
     },
-    computed: mapGetters([
-      'user',
-    ]),
+    mounted() {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.user = user;
+        } else {
+          this.user = null;
+        }
+      });
+    },
     components: {
       BootstrapToggle,
     },
-    methods: mapActions([
-      'signOut',
-    ]),
+    methods: {
+      signOut() {
+        rxEventBus.post(new RxEvent(events.SIGNOUT));
+      },
+    },
   };
 </script>
 

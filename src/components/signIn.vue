@@ -17,14 +17,14 @@
       <div v-if='displayForm'>
         <div class="form-group">
           <label for="exampleInputEmail1">Login</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="email" v-model="email" />
+          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="email" v-model="login" />
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
           <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" v-model="password" />
         </div>
         <div class="form-group">
-          <input type="button" value="Se connecter" class="btn btn-default" v-on:click="signInWithMailPassword(email,password)" />
+          <input type="button" value="Se connecter" class="btn btn-default" v-on:click="signInWithMailPassword" />
         </div>
       </div>
   
@@ -34,8 +34,10 @@
 
 <script>
   import {
-    mapActions,
-  } from 'vuex';
+    rxEventBus,
+    RxEvent,
+  } from '@/eventbus';
+  import * as events from '@/eventbus/events';
   
   import imgGoogle from '../assets/google-logo.png';
   import imgFacebook from '../assets/facebook-logo.png';
@@ -47,7 +49,7 @@
   export default {
     data() {
       return {
-        email: '',
+        login: '',
         password: '',
         displayForm: false,
         imgGoogle,
@@ -60,9 +62,17 @@
       LoginButton,
     },
     methods: {
-      ...mapActions(['signInWithProvider', 'signInWithMailPassword']),
+      signInWithProvider(provider) {
+        rxEventBus.post(new RxEvent(events.SIGNIN_PROVIDER, provider));
+      },
+      signInWithMailPassword() {
+        rxEventBus.post(new RxEvent(events.SIGNIN_MAIL, {
+          login: this.login,
+          password: this.password,
+        }));
+      },
       showMailPasswordForm() {
-  
+        this.displayForm = !this.displayForm;
       },
     },
   

@@ -1,5 +1,5 @@
 <template>
-  <img id="drop_zone" v-bind:src=imgSrc v-on:drop="drop_handler" v-on:dragover="dragover_handler" v-on:dragend="dragend_handler" height="200" alt="Image preview...">
+  <img id="drop_zone" v-bind:src=imgSrc v-on:drop="dropHandler" v-on:dragover="dragoverHandler" v-on:dragend="dragendHandler" height="200" alt="Image preview...">
   </img>
 </template>
 

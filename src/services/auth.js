@@ -1,10 +1,9 @@
 import axios from 'axios';
+import { rxEventBus } from '@/eventbus';
+import * as events from '@/eventbus/events';
+import router from '@/router';
 import { firebase } from './config';
 
-
-/* eslint-disable */
-//import app from './config';
-/* eslint-enable */
 
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 const githubProvider = new firebase.auth.GithubAuthProvider();
@@ -22,55 +21,69 @@ const selectProvider = (provider) => {
 };
 
 const getUserByUID = uid => axios.get(`http://127.0.0.1:8080/users/${uid}`);
+const putUserByUID = uid => axios.put(`http://127.0.0.1:8080/users/${uid}`, {
+  firebaseId: uid,
+});
+
 const signInWithFirebase = provider => firebase.auth().signInWithPopup(selectProvider(provider));
+const signInWithMailFirebase =
+  (login, password) => firebase.auth().signInWithEmailAndPassword(login, password);
 
-
-const signIn = function signIn(provider, success, errorProc) {
+const signInWithProvider = (provider) => {
   signInWithFirebase(provider)
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
-      console.log(`Error with firebase : ${errorCode}  ${errorMessage}`);
-      if (errorProc) {
-        errorProc(error.code, error.message);
-      }
-    })
+    .catch((error) => { console.log(`Technical excepion ${error}`); })
     .then(response => getUserByUID(response.user.uid))
-    .then(() => success)
+    .then(() => router.push('app'))
     .catch((error) => {
-      if (error.response.status === '404') {
-        console.log('User not foud, redirection vers la page signup');
+      if (error.response.status === 404) {
+        console.log('pas inscris');
+        router.push('signUp');
       } else {
-        console.log('error');
-        errorProc(0, 'Unable to call web service');
+        console.log('Technical excepion');
       }
     });
 };
 
+const signUpWithProvider = (provider) => {
+  signInWithFirebase(provider)
+    .catch((error) => { console.log(`Technical excepion ${error}`); })
+    .then(response => putUserByUID(response.user.uid))
+    .then(() => router.push('updateCat'))
+    .catch((error) => {
+      console.log(`Technical excepion ${error}`);
+    });
+};
+
+const signInWithMail = (login, password) => {
+  signInWithMailFirebase(login, password)
+    .catch((error) => {
+      console.log(`Technical excepion ${error}`);
+    })
+    .then(response => getUserByUID(response.user.uid))
+    .then(() => router.push('app'))
+    .catch((error) => {
+      if (error.response.status === 404) {
+        router.push('updateCat');
+      } else {
+        console.log('Technical excepion');
+      }
+    });
+};
+
+
+const signOut = () => {
+  firebase.auth().signOut()
+    .then(() => router.push('/'))
+    .catch(() => console.log('unable to signout'));
+};
+
+rxEventBus.subscribe(events.SIGNIN_PROVIDER, provider => signInWithProvider(provider));
+rxEventBus.subscribe(events.SIGNUP_PROVIDER, provider => signUpWithProvider(provider));
+rxEventBus.subscribe(events.SIGNIN_MAIL, ({ login, password }) => signInWithMail(login, password));
+rxEventBus.subscribe(events.SIGNUP_MAIL, ({ login, password }) => signInWithMail(login, password));
+rxEventBus.subscribe(events.SIGNOUT, () => signOut());
+
 export default {
-
-  loginWithLoginPassword(mail, password, success, errorProc) {
-    firebase.auth().signInWithEmailAndPassword(mail, password)
-      .then((result) => {
-        console.log('logged with login/password');
-        success(result.user);
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`${errorCode}  ${errorMessage}`);
-        if (errorProc) {
-          errorProc(error.code, error.message);
-        }
-      });
-  },
-
-  loginAsProvider(provider, success, error) {
-    signIn(provider, success, error);
-  },
-  signOut(onSignOut) {
-    firebase.auth().signOut().then(onSignOut);
+  init() {
   },
 };

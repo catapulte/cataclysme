@@ -1,4 +1,4 @@
-import { Rx } from 'rxjs';
+import Rx from 'rxjs/Rx';
 
 class RxEventBus {
 
@@ -14,7 +14,7 @@ class RxEventBus {
   }
 
   post(event) {
-    this.subject.onNext(event);
+    this.subject.next(event);
   }
 
 }
@@ -27,5 +27,4 @@ export class RxEvent {
     this.key = key;
     this.value = value;
   }
-
 }

@@ -35,13 +35,15 @@
 
 <script>
   import {
-    mapActions,
-  } from 'vuex';
+    rxEventBus,
+    RxEvent,
+  } from '@/eventbus';
+  import * as events from '@/eventbus/events';
   
-  import imgGoogle from '../assets/google-logo.png';
-  import imgFacebook from '../assets/facebook-logo.png';
-  import imgGithub from '../assets/github-logo.png';
-  import imgMail from '../assets/mail-logo.png';
+  import imgGoogle from '@/assets/google-logo.png';
+  import imgFacebook from '@/assets/facebook-logo.png';
+  import imgGithub from '@/assets/github-logo.png';
+  import imgMail from '@/assets/mail-logo.png';
   
   import LoginButton from './loginButton';
   
@@ -63,11 +65,15 @@
       LoginButton,
     },
     methods: {
-      ...mapActions(['signUpWithProvider']),
-  
+      signUpWithProvider(provider) {
+        rxEventBus.post(new RxEvent(events.SIGNUP_PROVIDER, provider));
+      },
       verifyBeforeSignUp() {
         if (this.password === this.password2) {
-          this.$store.dispatch('signUpWithMailPassword', this.email, this.password);
+          rxEventBus.post(new RxEvent(events.SIGNUP_MAIL, {
+            login: this.login,
+            password: this.password,
+          }));
         } else {
           console.log('bad correspondance password');
         }

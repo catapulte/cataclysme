@@ -10,8 +10,11 @@ const config = {
 };
 firebaseImport.initializeApp(config);
 
+const simpleApi = { url: 'http://localhost:8080' };
+if (process.env.NODE_ENV === 'production') {
+  simpleApi.url = 'https://simple.lolcat.passoire.net';
+}
+
 export const myApp = firebaseImport.app();
 export const firebase = firebaseImport;
-// let features = ['auth', 'database', 'messaging', 'storage']
-// .filter(feature => typeof myApp[feature] === 'function')
-// console.log(`Firebase SDK loaded with ${features.join(', ')}`)
+export const urlBackend = simpleApi.url;

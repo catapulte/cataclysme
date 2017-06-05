@@ -16,33 +16,33 @@
 </template>
 
 <script>
-  import {
-    mapGetters,
-  } from 'vuex';
-
   import upload from '@/services/upload';
-  import DropZoneFile from './dropZoneFile';
+  import uploadImg from '@/assets/empty_avatar.png';
   
+  import DropZoneFile from './dropZoneFile';
   
   export default {
     data() {
       return {
-        imgSrc: 'public/static/upload.png',
+        imgSrc: uploadImg,
       };
     },
+    props: ['catId'],
     mounted() {
-      upload.getProfilURL(this.catId, (url) => { this.imgSrc = url; });
+      upload.getProfilURL(this.catId)
+        .then((url) => {
+          this.imgSrc = url;
+        })
+        .catch(() => {
+          this.imgSrc = uploadImg;
+        });
     },
-    computed: mapGetters([
-      'catId',
-    ]),
     methods: {
       changeFile(file) {
-        console.log(this.catId);
         upload.uploadFile(this.catId, file);
       },
       finish() {
-        this.$router.push('app');
+        this.$router.push('../app');
       },
     },
     components: {
