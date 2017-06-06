@@ -62,7 +62,7 @@
           popupAnchor: [-3, -76],
         }),
         catData: null,
-        url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>',
         center: [48.302631, -1.666984],
       };
