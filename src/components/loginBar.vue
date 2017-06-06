@@ -28,11 +28,19 @@
         </div>
       </div>
     </div>
+
+
+    <alert :show.sync="showTop" placement="top-right" :duration="duration" type="danger" width="400px" dismissable>
+      <span class="icon-info-circled alert-icon-float-left"></span>
+      <strong>Heads up!</strong>
+      <p>This alert needs your attention.</p>
+    </alert>
   </nav>
 </template>
 
 <script>
   import BootstrapToggle from 'vue-bootstrap-toggle';
+  import { alert } from 'vue-strap';
   import {
     firebase,
   } from '@/services/config';
@@ -41,14 +49,25 @@
     RxEvent,
   } from '@/eventbus';
   import * as events from '@/eventbus/events';
-  
+  import database from '@/services/database';
   
   export default {
     data() {
       return {
-        checked: true,
+        checked: false,
         user: null,
+        showTop: true,
+        duration: 3000,
       };
+    },
+    watch: {
+      checked(state) {
+        if (state) {
+          database.batteryWatcher.subscribe(1);
+        } else {
+          database.batteryWatcher.unSubscribe();
+        }
+      },
     },
     mounted() {
       firebase.auth().onAuthStateChanged((user) => {
@@ -61,6 +80,7 @@
     },
     components: {
       BootstrapToggle,
+      alert,
     },
     methods: {
       signOut() {

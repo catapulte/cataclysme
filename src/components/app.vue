@@ -1,6 +1,5 @@
 <template>
   <div>
-  
     <div v-for="catp in catProfiles">
       <cat-profile :cat='catp' class="col-md-offset-4 col-md-4"></cat-profile>
     </div>

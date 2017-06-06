@@ -2,19 +2,18 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 
-/*eslint-disable */
-import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
-import b from 'bootstrap/dist/js/bootstrap.min.js';
-/*eslint-enable */
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.min';
 
 import Loader from '@/components/loader';
 import LoginBar from '@/components/loginBar';
+
+import '@/services/database';
 
 import router from './router';
 import services from './services/auth';
 
 services.init();
-
 
 Vue.config.productionTip = false;
 

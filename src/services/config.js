@@ -18,3 +18,4 @@ if (process.env.NODE_ENV === 'production') {
 export const myApp = firebaseImport.app();
 export const firebase = firebaseImport;
 export const urlBackend = simpleApi.url;
+export const database = firebase.database();
