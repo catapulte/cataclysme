@@ -12,7 +12,7 @@ firebaseImport.initializeApp(config);
 
 const simpleApi = { url: 'http://localhost:8080' };
 if (process.env.NODE_ENV === 'production') {
-  simpleApi.url = 'https://simple.lolcat.passoire.net';
+  simpleApi.url = 'https://catinder.lolcat.passoire.net';
 }
 
 export const myApp = firebaseImport.app();
