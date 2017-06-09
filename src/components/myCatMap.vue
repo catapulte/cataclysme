@@ -72,7 +72,7 @@
 
 <style>
   .mymap {
-    height: 500px!;
-    width: 1000px!;
+    height: 500px !important;
+    width: 1000px !important;
   }
 </style>
